@@ -29,6 +29,10 @@ yarn-error.log*
 *.env
 template.env
 
+# Log files
+*.log
+.maibot_webui.pid
+
 # Build artifacts
 /build/
 /dist/
