@@ -1,0 +1,33 @@
+# IDE and OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+*.egg-info/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.pnpm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Config files to ignore
+/配置文件/
+*.env
+template.env
+
+# Build artifacts
+/build/
+/dist/

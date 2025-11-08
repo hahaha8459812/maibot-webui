@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+python-multipart
+toml
+python-dotenv
+tomlkit
