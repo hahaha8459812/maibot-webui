@@ -17,11 +17,11 @@ const EnvConfig = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [initialValues, setInitialValues] = useState(null);
-  const { paths } = useConfigPaths();
+  const { paths, loading: pathsLoading, refreshPaths } = useConfigPaths();
   const { addLog } = useLogs();
 
   useEffect(() => {
-    if (paths.env_path) {
+    if (paths.env_path && !pathsLoading) {
       setLoading(true);
       addLog('正在加载 .env 配置...', 'info');
       const fetchConfig = async () => {
@@ -40,7 +40,7 @@ const EnvConfig = () => {
       };
       fetchConfig();
     }
-  }, [paths.env_path, form, addLog]);
+  }, [paths.env_path, pathsLoading, form, addLog]);
 
   const onFinish = async (values) => {
     addLog('正在保存 .env 配置...', 'info');
@@ -55,8 +55,18 @@ const EnvConfig = () => {
     }
   };
 
+  if (pathsLoading) {
+    return <Spin tip="正在读取 WebUI 配置..." size="large" style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }} />;
+  }
+
   if (!paths.env_path) {
-    return <Empty description="请先在“文件路径设置”页面中设置 .env 文件的路径。" />;
+    return (
+      <Empty description="请先在“文件路径设置”页面中设置 .env 文件的路径。">
+        <Button type="primary" onClick={() => refreshPaths().catch(() => {})}>
+          手动加载配置
+        </Button>
+      </Empty>
+    );
   }
 
   if (loading) {

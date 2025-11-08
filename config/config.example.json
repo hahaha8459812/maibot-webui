@@ -1,0 +1,9 @@
+{
+  "bot_config_path": "",
+  "model_config_path": "",
+  "env_path": "",
+  "webui_password": "",
+  "deployment_mode": "docker",
+  "project_root_path": "",
+  "adapter_config_path": ""
+}

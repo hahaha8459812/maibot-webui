@@ -24,11 +24,11 @@ const BotConfig = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [initialValues, setInitialValues] = useState(null);
-  const { paths } = useConfigPaths();
+  const { paths, loading: pathsLoading, refreshPaths } = useConfigPaths();
   const { addLog } = useLogs();
 
   useEffect(() => {
-    if (paths.bot_config_path) {
+    if (paths.bot_config_path && !pathsLoading) {
       setLoading(true);
       addLog('正在加载 Bot 配置...', 'info');
       const fetchConfig = async () => {
@@ -47,7 +47,7 @@ const BotConfig = () => {
       };
       fetchConfig();
     }
-  }, [paths.bot_config_path, form, addLog]);
+  }, [paths.bot_config_path, pathsLoading, form, addLog]);
 
   const onFinish = async (values) => {
     addLog('正在保存 Bot 配置...', 'info');
@@ -63,8 +63,18 @@ const BotConfig = () => {
     }
   };
 
+  if (pathsLoading) {
+    return <Spin tip="正在读取 WebUI 配置..." size="large" style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }} />;
+  }
+
   if (!paths.bot_config_path) {
-    return <Empty description="请先在“文件路径设置”页面中设置 bot_config.toml 的路径。" />;
+    return (
+      <Empty description="请先在“文件路径设置”页面中设置 bot_config.toml 的路径。">
+        <Button type="primary" onClick={() => refreshPaths().catch(() => {})}>
+          手动加载配置
+        </Button>
+      </Empty>
+    );
   }
 
   if (loading) {

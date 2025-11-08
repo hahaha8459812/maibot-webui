@@ -26,6 +26,7 @@ yarn-error.log*
 # Config files to ignore
 /配置文件/
 /范例/
+/config/config.json
 *.env
 template.env
 

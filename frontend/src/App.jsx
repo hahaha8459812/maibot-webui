@@ -6,36 +6,35 @@ import {
   ApartmentOutlined,
   CodeOutlined,
   ReadOutlined,
-  SunOutlined,
-  MoonOutlined,
+  AppstoreAddOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu, theme, Switch, ConfigProvider, Space, App as AntApp } from 'antd';
+import { Layout, Menu, theme, ConfigProvider, Space, App as AntApp, Button } from 'antd';
 import Paths from './pages/Paths';
 import LogPage from './pages/Logs';
 import BotConfig from './pages/BotConfig';
 import ModelConfig from './pages/ModelConfig';
 import EnvConfig from './pages/EnvConfig';
+import PluginMarket from './pages/PluginMarket';
 import { useTheme } from './contexts/ThemeContext';
+import { useAuth } from './contexts/AuthContext';
+import { useConfigPaths } from './contexts/ConfigPathContext';
 
 const { Header, Content, Sider } = Layout;
 
 const MainApp = () => {
   const location = useLocation();
-  const { theme: currentTheme, toggleTheme } = useTheme();
+  const { passwordRequired, logout } = useAuth();
+  const { paths } = useConfigPaths();
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer, borderRadiusLG, colorTextSecondary },
   } = theme.useToken();
+  const isDockerMode = (paths.deployment_mode || 'docker') !== 'linux';
 
   const menuItems = [
     {
       key: '/',
       icon: <FileOutlined />,
       label: <Link to="/">文件路径</Link>,
-    },
-    {
-      key: '/logs',
-      icon: <ReadOutlined />,
-      label: <Link to="/logs">应用日志</Link>,
     },
     {
       key: '/bot-config',
@@ -52,13 +51,26 @@ const MainApp = () => {
       icon: <CodeOutlined />,
       label: <Link to="/env-config">环境配置</Link>,
     },
+    {
+      key: '/plugin-market',
+      icon: <AppstoreAddOutlined />,
+      label: <Link to="/plugin-market">插件广场</Link>,
+    },
   ];
+
+  if (isDockerMode) {
+    menuItems.push({
+      key: '/logs',
+      icon: <ReadOutlined />,
+      label: <Link to="/logs">容器日志</Link>,
+    });
+  }
 
   const siderWidth = 200;
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider 
+      <Sider
         width={siderWidth}
         style={{
           overflow: 'auto',
@@ -75,29 +87,30 @@ const MainApp = () => {
       <Layout style={{ marginLeft: siderWidth }}>
         <Header style={{ padding: '0 24px', background: colorBgContainer, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
           <Space>
-            <SunOutlined />
-            <Switch
-              checked={currentTheme === 'dark'}
-              onChange={toggleTheme}
-            />
-            <MoonOutlined />
+            <span style={{ color: colorTextSecondary }}>暗色模式</span>
+            {passwordRequired && (
+              <Button type="link" onClick={logout}>
+                退出登录
+              </Button>
+            )}
           </Space>
         </Header>
         <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-          <div 
-            style={{ 
-              padding: 24, 
+          <div
+            style={{
+              padding: 24,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
-              textAlign: 'left'
+              textAlign: 'left',
             }}
           >
             <Routes>
               <Route path="/" element={<Paths />} />
-              <Route path="/logs" element={<LogPage />} />
               <Route path="/bot-config" element={<BotConfig />} />
               <Route path="/model-config" element={<ModelConfig />} />
               <Route path="/env-config" element={<EnvConfig />} />
+              <Route path="/plugin-market" element={<PluginMarket />} />
+              {isDockerMode && <Route path="/logs" element={<LogPage />} />}
             </Routes>
           </div>
         </Content>

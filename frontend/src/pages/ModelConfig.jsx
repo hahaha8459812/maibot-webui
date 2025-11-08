@@ -74,7 +74,7 @@ const ModelConfig = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [initialValues, setInitialValues] = useState(null);
-  const { paths } = useConfigPaths();
+  const { paths, loading: pathsLoading, refreshPaths } = useConfigPaths();
   const { addLog } = useLogs();
   const { token } = theme.useToken();
 
@@ -84,7 +84,7 @@ const ModelConfig = () => {
   };
 
   useEffect(() => {
-    if (paths.model_config_path) {
+    if (paths.model_config_path && !pathsLoading) {
       setLoading(true);
       addLog('正在加载模型配置...', 'info');
       const fetchConfig = async () => {
@@ -103,7 +103,7 @@ const ModelConfig = () => {
       };
       fetchConfig();
     }
-  }, [paths.model_config_path, form, addLog]);
+  }, [paths.model_config_path, pathsLoading, form, addLog]);
 
   const onFinish = async (values) => {
     addLog('正在保存模型配置...', 'info');
@@ -134,8 +134,18 @@ const ModelConfig = () => {
     }
   };
 
+  if (pathsLoading) {
+    return <Spin tip="正在读取 WebUI 配置..." size="large" style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }} />;
+  }
+
   if (!paths.model_config_path) {
-    return <Empty description="请先在“文件路径设置”页面中设置 model_config.toml 的路径。" />;
+    return (
+      <Empty description="请先在“文件路径设置”页面中设置 model_config.toml 的路径。">
+        <Button type="primary" onClick={() => refreshPaths().catch(() => {})}>
+          手动加载配置
+        </Button>
+      </Empty>
+    );
   }
 
   if (loading) {
