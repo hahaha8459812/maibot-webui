@@ -65,6 +65,7 @@ chmod +x start.sh
 ```
 
 **Linux 管理菜单**：Linux 版本提供了交互式菜单，包含启动/停止/重启服务、查看状态、注册 systemd 服务等功能。
+启动脚本会自动创建虚拟环境并在后台创建一个名为 `maibot-webui-session` 的 `screen` 会话来运行 WebUI。通过菜单的“停止服务”会直接关闭该会话；日志输出仍保存在 `maibot-webui.log` 中，如需手动查看可使用 `screen -r maibot-webui-session` 重新附着。
 
 ### 访问 Web UI
 
