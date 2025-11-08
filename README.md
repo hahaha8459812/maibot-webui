@@ -41,7 +41,7 @@
 
 ### 一键启动
 
-本项目已经打包完成，提供了一键启动脚本，会自动创建虚拟环境、安装依赖并启动服务。
+本项目提供了功能完整的启动脚本，会自动检查并安装依赖，并提供交互式菜单进行服务管理。
 
 #### Windows 用户
 
@@ -55,21 +55,36 @@
 chmod +x start.sh
 ```
 
-然后运行脚本启动应用：
+然后运行脚本：
 
 ```bash
 ./start.sh
 ```
 
+### 管理菜单
+
+启动脚本会显示一个交互式菜单，提供以下功能：
+
+#### 基本操作
+- **[1] 启动服务** - 启动 Maibot WebUI 服务
+- **[2] 停止服务** - 停止正在运行的服务
+- **[3] 重启服务** - 重启服务
+- **[4] 查看服务状态** - 查看当前服务运行状态
+
+#### 系统服务管理
+- **[5] 注册为系统服务** - 将应用注册为系统服务（开机自启）
+  - Windows: 使用 NSSM (Non-Sucking Service Manager)
+  - Linux: 使用 systemd
+- **[6] 注销系统服务** - 从系统服务中移除
+- **[7] 查看系统服务状态** - 查看 systemd 服务状态（仅 Linux）
+
 ### 访问 Web UI
 
-脚本会自动完成所有准备工作。当您在终端中看到类似以下输出时：
+服务启动后，打开浏览器访问 [http://localhost:28517](http://localhost:28517)
 
-```
-INFO:     Uvicorn running on http://0.0.0.0:28517 (Press CTRL+C to quit)
-```
+#### 日志文件
 
-即可打开浏览器访问 [http://localhost:28517](http://localhost:28517)
+服务运行日志保存在项目根目录的 `maibot-webui.log` 文件中。
 
 ## 📁 项目结构
 
@@ -245,6 +260,35 @@ A: 建议在修改配置前：
 ### Q: 可以同时编辑多个 Maibot 实例的配置吗？
 
 A: 可以。只需在"文件路径设置"页面切换不同实例的配置文件路径即可。路径会在内存中保存，重启应用后需要重新设置。
+
+### Q: 如何将应用注册为系统服务（开机自启）？
+
+A: 使用启动脚本的菜单功能：
+
+**Windows**:
+1. 下载 [NSSM (Non-Sucking Service Manager)](https://nssm.cc/download)
+2. 运行 `start.bat`，选择"[5] 注册为系统服务"
+3. 按照提示操作，需要管理员权限
+
+**Linux**:
+1. 使用 `sudo` 运行启动脚本: `sudo ./start.sh`
+2. 选择"[5] 注册为系统服务"
+3. 服务将自动注册到 systemd
+
+### Q: 如何查看服务日志？
+
+A: 日志文件位于项目根目录的 `maibot-webui.log`，可以使用以下命令查看：
+
+**Windows**:
+```cmd
+type maibot-webui.log
+```
+
+**Linux/macOS**:
+```bash
+tail -f maibot-webui.log  # 实时查看
+cat maibot-webui.log      # 查看全部内容
+```
 
 ## 🤝 贡献
 
