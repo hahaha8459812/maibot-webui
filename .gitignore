@@ -12,7 +12,7 @@ __pycache__/
 *.pyo
 *.pyd
 env/
-venv/
+.venv/
 *.egg-info/
 
 # Node
@@ -25,6 +25,7 @@ yarn-error.log*
 
 # Config files to ignore
 /配置文件/
+/范例/
 *.env
 template.env
 
